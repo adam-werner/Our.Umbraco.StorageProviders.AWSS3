@@ -104,4 +104,4 @@ If you encounter a bug when using this client library you are welcome to open an
 
 ## License
 
-Umbraco Storage Providers is [MIT licensed](LICENSE).
+Umbraco Storage Provider for AWS S3 is [MIT licensed](LICENSE).
