@@ -1,0 +1,16 @@
+*.dll
+*.exe
+*.log
+*.nupkg
+*.suo
+*.user
+
+.idea/
+.vs/
+.vscode/
+[Bb]in/
+[Oo]bj/
+
+Build/temp
+build.out/
+build.tmp/

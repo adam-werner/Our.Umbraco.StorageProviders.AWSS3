@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.7.7.16" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="9.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\EquateDigital\ImageSharp.Web\src\ImageSharp.Web.Providers.AWS\ImageSharp.Web.Providers.AWS.csproj" />
+  </ItemGroup>
+
+</Project>
