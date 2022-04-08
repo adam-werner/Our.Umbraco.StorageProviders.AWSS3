@@ -12,6 +12,11 @@ It also has the following features:
 
 ### Usage
 
+Note to use on the current version (1.0.5) of ImageSharp.Web and Umbraco the following must be done:
+- Build Umbraco.Web.Common against the version of ImageSharp.Web on MyGet
+- ImageSharp.Web includes a breaking change, change CropWebProcessor.cs as shown here https://gist.github.com/andyfelton-equatedigital/9e5e02dd1ff53f3639e293ce911b7fba
+- Use your version of Umbraco.Web.Common on your project
+
 This provider can be added in the `Startup.cs` file:
 
 ```csharp
