@@ -233,7 +233,7 @@ namespace Umbraco.StorageProviders.AWSS3
             await DownloadRangeToStreamAsync(s3Client, response.Body, 0L, objectProperties.ContentLength, context.RequestAborted, _bucketName, containerPath).ConfigureAwait(false);
         }
 
-        private static GetObjectMetadataRequest? GetAccessCondition(HttpRequest request, String key, String bucketName)
+        private static GetObjectMetadataRequest GetAccessCondition(HttpRequest request, String key, String bucketName)
         {
             var range = request.Headers["Range"];
 

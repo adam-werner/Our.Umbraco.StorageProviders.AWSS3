@@ -48,7 +48,7 @@ namespace Umbraco.StorageProviders.AWSS3.Imaging
 
             var fileSystemOptions = options.Get(name);
 
-            var cacheOptions = new AWSS3BucketClientOptions
+            var cacheOptions = new AWSS3StorageCacheOptions
             {
                 BucketName = fileSystemOptions.BucketName,
                 Region = fileSystemOptions.Region,
@@ -77,7 +77,7 @@ namespace Umbraco.StorageProviders.AWSS3.Imaging
         {
             if (name != _name) return;
 
-            var cacheOptions = new AWSS3BucketClientOptions
+            var cacheOptions = new AWSS3StorageCacheOptions
             {
                 BucketName = options.BucketName,
                 Region = options.Region
