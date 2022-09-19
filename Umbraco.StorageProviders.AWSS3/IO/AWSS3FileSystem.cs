@@ -50,7 +50,7 @@ namespace Umbraco.StorageProviders.AWSS3.IO
             _bucketName = options.BucketName ?? throw new ArgumentNullException(nameof(contentTypeProvider));
 
             _rootUrl = EnsureUrlSeparatorChar(hostingEnvironment.ToAbsolute(options.VirtualPath)).TrimEnd('/');
-            _bucketPrefix = options.BucketPrefix ?? _rootUrl;
+            _bucketPrefix = AWSS3FileSystemOptions.BucketPrefix ?? _rootUrl;
             _cannedACL = options.CannedACL;
             _serverSideEncryptionMethod = options.ServerSideEncryptionMethod;
             _rootPath = hostingEnvironment.ToAbsolute(options.VirtualPath);

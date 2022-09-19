@@ -63,7 +63,7 @@ namespace Umbraco.StorageProviders.AWSS3
 
             var fileSystemOptions = options.Get(name);
             _rootPath = hostingEnvironment.ToAbsolute(fileSystemOptions.VirtualPath);
-            _containerRootPath = fileSystemOptions.BucketPrefix ?? _rootPath;
+            _containerRootPath = AWSS3FileSystemOptions.BucketPrefix ?? _rootPath;
             _bucketName = fileSystemOptions.BucketName;
 
             _s3Client = s3Client;
