@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using Amazon.S3;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,6 +14,7 @@ namespace Umbraco.StorageProviders.AWSS3.IO
     class AWSS3FileSystemProvider : IAWSS3FileSystemProvider
     {
         private readonly ConcurrentDictionary<string, IAWSS3FileSystem> _fileSystems = new();
+        private readonly IAmazonS3 _S3Client;
         private readonly IOptionsMonitor<AWSS3FileSystemOptions> _optionsMonitor;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IIOHelper _ioHelper;
@@ -21,27 +23,26 @@ namespace Umbraco.StorageProviders.AWSS3.IO
         private readonly IMimeTypeResolver _mimeTypeResolver;
 
         /// <summary>
-        /// Creates a new instance of <see cref="AzureBlobFileSystemProvider" />.
+        /// 
         /// </summary>
-        /// <param name="optionsMonitor">The options monitor.</param>
-        /// <param name="hostingEnvironment">The hosting environment.</param>
-        /// <param name="ioHelper">The IO helper.</param>
-        /// <param name="logger">The logger.</param>
-        /// <exception cref="System.ArgumentNullException">optionsMonitor
-        /// or
-        /// hostingEnvironment
-        /// or
-        /// ioHelper</exception>
-        public AWSS3FileSystemProvider(IOptionsMonitor<AWSS3FileSystemOptions> optionsMonitor, IHostingEnvironment hostingEnvironment, IIOHelper ioHelper,
-            ILoggerFactory loggerFactory, IMimeTypeResolver mimeTypeResolver)
+        /// <param name="optionsMonitor"></param>
+        /// <param name="hostingEnvironment"></param>
+        /// <param name="loggerFactory"></param>
+        /// <param name="mimeTypeResolver"></param>
+        /// <param name="s3Client"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public AWSS3FileSystemProvider(IOptionsMonitor<AWSS3FileSystemOptions> optionsMonitor, IHostingEnvironment hostingEnvironment, 
+            ILoggerFactory loggerFactory, IMimeTypeResolver mimeTypeResolver, IAmazonS3 s3Client)
         {
             _optionsMonitor = optionsMonitor ?? throw new ArgumentNullException(nameof(optionsMonitor));
             _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
-            _ioHelper = ioHelper ?? throw new ArgumentNullException(nameof(ioHelper));
             _loggerFactory = loggerFactory;
             _mimeTypeResolver = mimeTypeResolver;
 
             _fileExtensionContentTypeProvider = new FileExtensionContentTypeProvider();
+
+            _S3Client = s3Client;
+
             _optionsMonitor.OnChange(OptionsOnChange);
         }
 
@@ -62,8 +63,8 @@ namespace Umbraco.StorageProviders.AWSS3.IO
 
         private IAWSS3FileSystem CreateInstance(AWSS3FileSystemOptions options)
         {
-            return new AWSS3FileSystem(options, _hostingEnvironment, _ioHelper, _fileExtensionContentTypeProvider, 
-                _loggerFactory.CreateLogger<AWSS3FileSystem>(), _mimeTypeResolver);
+            return new AWSS3FileSystem(options, _hostingEnvironment, _fileExtensionContentTypeProvider, 
+                _loggerFactory.CreateLogger<AWSS3FileSystem>(), _mimeTypeResolver, _S3Client);
         }
 
         private void OptionsOnChange(AWSS3FileSystemOptions options, string name)
