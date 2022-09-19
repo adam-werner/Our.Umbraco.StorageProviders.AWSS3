@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Threading.Tasks;
+using Amazon.S3;
 using Amazon.S3.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -22,6 +23,7 @@ namespace Umbraco.StorageProviders.AWSS3.Imaging
         private readonly IAWSS3FileSystemProvider _fileSystemProvider;
         private string _rootPath;
         private readonly FormatUtilities _formatUtilities;
+        private readonly IAmazonS3 _s3Client;
 
         /// <summary>
         /// A match function used by the resolver to identify itself as the correct resolver to use.
@@ -35,8 +37,9 @@ namespace Umbraco.StorageProviders.AWSS3.Imaging
         /// <param name="fileSystemProvider">The file system provider.</param>
         /// <param name="hostingEnvironment">The hosting environment.</param>
         /// <param name="formatUtilities">The format utilities.</param>
-        public AWSS3FileSystemImageProvider(IOptionsMonitor<AWSS3FileSystemOptions> options, IAWSS3FileSystemProvider fileSystemProvider, IHostingEnvironment hostingEnvironment, FormatUtilities formatUtilities)
-            : this(AWSS3FileSystemOptions.MediaFileSystemName, options, fileSystemProvider, hostingEnvironment, formatUtilities)
+        /// <param name="s3Client">AWS S3 client.</param>
+        public AWSS3FileSystemImageProvider(IOptionsMonitor<AWSS3FileSystemOptions> options, IAWSS3FileSystemProvider fileSystemProvider, IHostingEnvironment hostingEnvironment, FormatUtilities formatUtilities, IAmazonS3 s3Client)
+            : this(AWSS3FileSystemOptions.MediaFileSystemName, options, fileSystemProvider, hostingEnvironment, formatUtilities, s3Client)
         { }
 
         /// <summary>
@@ -56,8 +59,7 @@ namespace Umbraco.StorageProviders.AWSS3.Imaging
         /// fileSystemProvider
         /// or
         /// formatUtilities</exception>
-        protected AWSS3FileSystemImageProvider(string name, IOptionsMonitor<AWSS3FileSystemOptions> options, IAWSS3FileSystemProvider fileSystemProvider,
-            IHostingEnvironment hostingEnvironment, FormatUtilities formatUtilities)
+        protected AWSS3FileSystemImageProvider(string name, IOptionsMonitor<AWSS3FileSystemOptions> options, IAWSS3FileSystemProvider fileSystemProvider, IHostingEnvironment hostingEnvironment, FormatUtilities formatUtilities, IAmazonS3 s3Client)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (hostingEnvironment == null) throw new ArgumentNullException(nameof(hostingEnvironment));
@@ -69,6 +71,8 @@ namespace Umbraco.StorageProviders.AWSS3.Imaging
             var fileSystemOptions = options.Get(name);
             _rootPath = hostingEnvironment.ToAbsolute(fileSystemOptions.VirtualPath);
             _bucketName = fileSystemOptions.BucketName;
+
+            _s3Client = s3Client;
 
             options.OnChange((o, n) => OptionsOnChange(o, n, hostingEnvironment));
         }
@@ -92,10 +96,9 @@ namespace Umbraco.StorageProviders.AWSS3.Imaging
         private async Task<IImageResolver?> GetResolverAsync(HttpContext context)
         {
             var fileSystemProvider = _fileSystemProvider.GetFileSystem(_name);
-            var s3Client = fileSystemProvider.GetS3Client(context.Request.Path);
 
-            if (await AmazonS3Util.DoesS3BucketExistV2Async(s3Client, _bucketName))
-                return new AWSS3StorageImageResolver(s3Client, _bucketName, fileSystemProvider.ResolveBucketPath(context.Request.Path));
+            if (await AmazonS3Util.DoesS3BucketExistV2Async(_s3Client, _bucketName))
+                return new AWSS3StorageImageResolver(_s3Client, _bucketName, fileSystemProvider.ResolveBucketPath(context.Request.Path));
 
             return null;
         }

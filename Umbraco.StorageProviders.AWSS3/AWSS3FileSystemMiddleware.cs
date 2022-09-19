@@ -26,6 +26,7 @@ namespace Umbraco.StorageProviders.AWSS3
         private string _containerRootPath;
         private string _bucketName;
         private readonly TimeSpan? _maxAge = TimeSpan.FromDays(7);
+        private readonly IAmazonS3 _s3Client;
 
         /// <summary>
         /// Creates a new instance of <see cref="AWSS3FileSystemMiddleware" />.
@@ -34,8 +35,8 @@ namespace Umbraco.StorageProviders.AWSS3
         /// <param name="fileSystemProvider">The file system provider.</param>
         /// <param name="hostingEnvironment">The hosting environment.</param>
         /// 
-        public AWSS3FileSystemMiddleware(IOptionsMonitor<AWSS3FileSystemOptions> options, IAWSS3FileSystemProvider fileSystemProvider, IHostingEnvironment hostingEnvironment)
-            : this(AWSS3FileSystemOptions.MediaFileSystemName, options, fileSystemProvider, hostingEnvironment)
+        public AWSS3FileSystemMiddleware(IOptionsMonitor<AWSS3FileSystemOptions> options, IAWSS3FileSystemProvider fileSystemProvider, IHostingEnvironment hostingEnvironment, IAmazonS3 s3Client)
+            : this(AWSS3FileSystemOptions.MediaFileSystemName, options, fileSystemProvider, hostingEnvironment, s3Client)
         { }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace Umbraco.StorageProviders.AWSS3
         /// name
         /// or
         /// fileSystemProvider</exception>
-        protected AWSS3FileSystemMiddleware(string name, IOptionsMonitor<AWSS3FileSystemOptions> options, IAWSS3FileSystemProvider fileSystemProvider, IHostingEnvironment hostingEnvironment)
+        protected AWSS3FileSystemMiddleware(string name, IOptionsMonitor<AWSS3FileSystemOptions> options, IAWSS3FileSystemProvider fileSystemProvider, IHostingEnvironment hostingEnvironment, IAmazonS3 s3Client)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (hostingEnvironment == null) throw new ArgumentNullException(nameof(hostingEnvironment));
@@ -64,6 +65,8 @@ namespace Umbraco.StorageProviders.AWSS3
             _rootPath = hostingEnvironment.ToAbsolute(fileSystemOptions.VirtualPath);
             _containerRootPath = fileSystemOptions.BucketPrefix ?? _rootPath;
             _bucketName = fileSystemOptions.BucketName;
+
+            _s3Client = s3Client;
 
             options.OnChange((o, n) => OptionsOnChange(o, n, hostingEnvironment));
         }
@@ -89,7 +92,6 @@ namespace Umbraco.StorageProviders.AWSS3
             }
 
             string containerPath = $"{_containerRootPath.TrimEnd('/')}/{(request.Path.Value.Remove(0, _rootPath.Length)).TrimStart('/')}";
-            var s3Client = _fileSystemProvider.GetFileSystem(_name).GetS3Client(containerPath);
 
             var s3RequestConditions = GetAccessCondition(context.Request, containerPath, _bucketName);
             
@@ -98,7 +100,7 @@ namespace Umbraco.StorageProviders.AWSS3
 
             try
             {
-                objectProperties = (await s3Client.GetObjectMetadataAsync(s3RequestConditions));
+                objectProperties = (await _s3Client.GetObjectMetadataAsync(s3RequestConditions));
             }
             catch (AmazonS3Exception ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
@@ -112,7 +114,7 @@ namespace Umbraco.StorageProviders.AWSS3
                 // if the resource has been modified, we need to send the whole file back with a 200 OK
                 // a Content-Range header is needed with the new length
                 ignoreRange = true;
-                objectProperties = await s3Client.GetObjectMetadataAsync(s3RequestConditions).ConfigureAwait(false);
+                objectProperties = await _s3Client.GetObjectMetadataAsync(s3RequestConditions).ConfigureAwait(false);
                 response.Headers.Append("Content-Range", $"bytes */{objectProperties.Headers.ContentLength}");
             }
             catch (AmazonS3Exception ex) when (ex.StatusCode == HttpStatusCode.NotModified)
@@ -134,7 +136,7 @@ namespace Umbraco.StorageProviders.AWSS3
                     // if the resource has been modified, we need to send the whole file back with a 200 OK
                     // a Content-Range header is needed with the new length
                     ignoreRange = true;
-                    objectProperties = await s3Client.GetObjectMetadataAsync(s3RequestConditions).ConfigureAwait(false);
+                    objectProperties = await _s3Client.GetObjectMetadataAsync(s3RequestConditions).ConfigureAwait(false);
                     response.Headers.Append("Content-Range", $"bytes */{objectProperties.ContentLength}");
                 }
                 else
@@ -190,7 +192,7 @@ namespace Umbraco.StorageProviders.AWSS3
                     response.ContentType = objectProperties.Headers.ContentType;
                     responseHeaders.ContentRange = contentRange;
 
-                    await DownloadRangeToStreamAsync(s3Client, objectProperties, response.Body, contentRange, context.RequestAborted,
+                    await DownloadRangeToStreamAsync(_s3Client, objectProperties, response.Body, contentRange, context.RequestAborted,
                         _bucketName, containerPath).ConfigureAwait(false);
                     return;
                 }
@@ -214,7 +216,7 @@ namespace Umbraco.StorageProviders.AWSS3
                         await response.WriteAsync("\n").ConfigureAwait(false);
                         await response.WriteAsync("\n").ConfigureAwait(false);
 
-                        await DownloadRangeToStreamAsync(s3Client, objectProperties, response.Body, contentRange, context.RequestAborted,
+                        await DownloadRangeToStreamAsync(_s3Client, objectProperties, response.Body, contentRange, context.RequestAborted,
                             _bucketName, containerPath).ConfigureAwait(false);
                         await response.WriteAsync("\n").ConfigureAwait(false);
                     }
@@ -230,10 +232,10 @@ namespace Umbraco.StorageProviders.AWSS3
             responseHeaders.Append(HeaderNames.AcceptRanges, "bytes");
 
             await response.StartAsync().ConfigureAwait(false);
-            await DownloadRangeToStreamAsync(s3Client, response.Body, 0L, objectProperties.ContentLength, context.RequestAborted, _bucketName, containerPath).ConfigureAwait(false);
+            await DownloadRangeToStreamAsync(_s3Client, response.Body, 0L, objectProperties.ContentLength, context.RequestAborted, _bucketName, containerPath).ConfigureAwait(false);
         }
 
-        private static GetObjectMetadataRequest GetAccessCondition(HttpRequest request, String key, String bucketName)
+        private static GetObjectMetadataRequest GetAccessCondition(HttpRequest request, string key, string bucketName)
         {
             var range = request.Headers["Range"];
 
@@ -342,7 +344,7 @@ namespace Umbraco.StorageProviders.AWSS3
         }
 
         private static async Task DownloadRangeToStreamAsync(IAmazonS3 s3Client, GetObjectMetadataResponse properties,
-            Stream outputStream, ContentRangeHeaderValue contentRange, CancellationToken cancellationToken, String bucketName, String key)
+            Stream outputStream, ContentRangeHeaderValue contentRange, CancellationToken cancellationToken, string bucketName, string key)
         {
             var offset = contentRange.From.GetValueOrDefault(0L);
             var length = properties.ContentLength;
@@ -364,7 +366,7 @@ namespace Umbraco.StorageProviders.AWSS3
         }
 
         private static async Task DownloadRangeToStreamAsync(IAmazonS3 s3Client, Stream outputStream,
-            long offset, long length, CancellationToken cancellationToken, String bucketName, String key)
+            long offset, long length, CancellationToken cancellationToken, string bucketName, string key)
         {
             try
             {
