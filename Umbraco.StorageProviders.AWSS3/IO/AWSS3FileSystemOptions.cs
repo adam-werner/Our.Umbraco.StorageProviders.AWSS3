@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Amazon.S3;
 
-namespace Umbraco.StorageProviders.AWSS3.IO
+namespace Our.Umbraco.StorageProviders.AWSS3.IO
 {
     public class AWSS3FileSystemOptions
     {

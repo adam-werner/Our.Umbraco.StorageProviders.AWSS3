@@ -1,7 +1,7 @@
 ﻿using Amazon.S3;
 using Umbraco.Cms.Core.IO;
 
-namespace Umbraco.StorageProviders.AWSS3.IO
+namespace Our.Umbraco.StorageProviders.AWSS3.IO
 {
     public interface IAWSS3FileSystem : IFileSystem
     {

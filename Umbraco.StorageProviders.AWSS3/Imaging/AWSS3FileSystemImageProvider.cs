@@ -11,9 +11,9 @@ using SixLabors.ImageSharp.Web.Providers;
 using SixLabors.ImageSharp.Web.Resolvers;
 using SixLabors.ImageSharp.Web.Resolvers.AWS;
 using Umbraco.Cms.Core.Hosting;
-using Umbraco.StorageProviders.AWSS3.IO;
+using Our.Umbraco.StorageProviders.AWSS3.IO;
 
-namespace Umbraco.StorageProviders.AWSS3.Imaging
+namespace Our.Umbraco.StorageProviders.AWSS3.Imaging
 {
     /// <inheritdoc />
     public class AWSS3FileSystemImageProvider : IImageProvider

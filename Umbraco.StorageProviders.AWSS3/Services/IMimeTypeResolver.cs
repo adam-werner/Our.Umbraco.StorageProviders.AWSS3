@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbraco.StorageProviders.AWSS3.Services
+namespace Our.Umbraco.StorageProviders.AWSS3.Services
 {
     public interface IMimeTypeResolver
     {

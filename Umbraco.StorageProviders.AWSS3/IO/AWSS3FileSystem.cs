@@ -9,10 +9,10 @@ using Amazon.S3.Model;
 using Microsoft.AspNetCore.StaticFiles;
 using Umbraco.Cms.Core.Hosting;
 using Umbraco.Cms.Core.IO;
-using Umbraco.StorageProviders.AWSS3.Services;
+using Our.Umbraco.StorageProviders.AWSS3.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Umbraco.StorageProviders.AWSS3.IO
+namespace Our.Umbraco.StorageProviders.AWSS3.IO
 {
     public class AWSS3FileSystem : IAWSS3FileSystem
     {

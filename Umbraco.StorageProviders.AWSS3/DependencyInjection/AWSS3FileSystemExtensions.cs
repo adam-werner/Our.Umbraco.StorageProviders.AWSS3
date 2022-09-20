@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Umbraco.StorageProviders.AWSS3.IO;
-using Umbraco.StorageProviders.AWSS3.Services;
+using Our.Umbraco.StorageProviders.AWSS3.IO;
+using Our.Umbraco.StorageProviders.AWSS3.Services;
 
 // ReSharper disable once CheckNamespace
 // uses same namespace as Umbraco Core for easier discoverability

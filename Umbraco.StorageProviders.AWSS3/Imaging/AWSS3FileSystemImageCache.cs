@@ -9,9 +9,9 @@ using SixLabors.ImageSharp.Web;
 using SixLabors.ImageSharp.Web.Caching;
 using SixLabors.ImageSharp.Web.Caching.AWS;
 using SixLabors.ImageSharp.Web.Resolvers;
-using Umbraco.StorageProviders.AWSS3.IO;
+using Our.Umbraco.StorageProviders.AWSS3.IO;
 
-namespace Umbraco.StorageProviders.AWSS3.Imaging
+namespace Our.Umbraco.StorageProviders.AWSS3.Imaging
 {
     /// <summary>
     /// Implements an S3 based cache storing files in a <c>cache</c> subfolder.
