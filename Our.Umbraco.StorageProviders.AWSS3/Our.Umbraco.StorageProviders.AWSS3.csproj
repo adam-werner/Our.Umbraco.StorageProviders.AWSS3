@@ -9,6 +9,8 @@
     <Description>The AWS S3 Storage provider has an implementation of the Umbraco IFileSystem that connects to an AWS S3 Storage container.</Description>
     <PackageTags>umbraco aws s3</PackageTags>
     <PackageLicenseFile>License.md</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/adam-werner/Our.Umbraco.StorageProviders.AWSS3</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
