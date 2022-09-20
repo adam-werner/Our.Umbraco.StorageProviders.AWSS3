@@ -2,7 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Umbraco AWS S3 Storage Provider</Title>
+    <PackageProjectUrl>https://github.com/adam-werner/Our.Umbraco.StorageProviders.AWSS3</PackageProjectUrl>
+    <Copyright>2022</Copyright>
+    <Description>The AWS S3 Storage provider has an implementation of the Umbraco IFileSystem that connects to an AWS S3 Storage container.</Description>
+    <PackageTags>umbraco aws s3</PackageTags>
+    <PackageLicenseFile>License.md</PackageLicenseFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\License.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.2" />
