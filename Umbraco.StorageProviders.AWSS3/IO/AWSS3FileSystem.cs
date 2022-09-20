@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,8 +17,7 @@ namespace Umbraco.StorageProviders.AWSS3.IO
     public class AWSS3FileSystem : IAWSS3FileSystem
     {
         private readonly IContentTypeProvider _contentTypeProvider;
-        private readonly IIOHelper _ioHelper;
-        protected readonly IAmazonS3 _S3Client;
+        private readonly IAmazonS3 _S3Client;
         private readonly string _rootUrl;
         private readonly string _bucketPrefix;
         private readonly string _bucketName;
@@ -38,30 +37,27 @@ namespace Umbraco.StorageProviders.AWSS3.IO
         /// </summary>
         /// <param name="options"></param>
         /// <param name="hostingEnvironment"></param>
-        /// <param name="ioHelper"></param>
         /// <param name="contentTypeProvider"></param>
         /// <exception cref="ArgumentNullException"></exception>
         public AWSS3FileSystem(AWSS3FileSystemOptions options, IHostingEnvironment hostingEnvironment,
-            IIOHelper ioHelper, IContentTypeProvider contentTypeProvider, ILogger<AWSS3FileSystem> logger,
-            IMimeTypeResolver mimeTypeResolver)
+            IContentTypeProvider contentTypeProvider, ILogger<AWSS3FileSystem> logger, IMimeTypeResolver mimeTypeResolver, IAmazonS3 s3Client)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (hostingEnvironment == null) throw new ArgumentNullException(nameof(hostingEnvironment));
 
             _logger = logger;
-            _ioHelper = ioHelper ?? throw new ArgumentNullException(nameof(ioHelper));
             _contentTypeProvider = contentTypeProvider ?? throw new ArgumentNullException(nameof(contentTypeProvider));
             _bucketName = options.BucketName ?? throw new ArgumentNullException(nameof(contentTypeProvider));
 
             _rootUrl = EnsureUrlSeparatorChar(hostingEnvironment.ToAbsolute(options.VirtualPath)).TrimEnd('/');
-            _bucketPrefix = options.BucketPrefix ?? _rootUrl;
+            _bucketPrefix = AWSS3FileSystemOptions.BucketPrefix ?? _rootUrl;
             _cannedACL = options.CannedACL;
             _serverSideEncryptionMethod = options.ServerSideEncryptionMethod;
             _rootPath = hostingEnvironment.ToAbsolute(options.VirtualPath);
 
-            _S3Client = new AmazonS3Client(Amazon.RegionEndpoint.GetBySystemName(options.Region));
-
             _mimeTypeResolver = mimeTypeResolver;
+
+            _S3Client = s3Client;
         }
 
 

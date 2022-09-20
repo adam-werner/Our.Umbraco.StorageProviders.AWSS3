@@ -14,10 +14,15 @@ namespace Umbraco.StorageProviders.AWSS3.IO
         public const string MediaFileSystemName = "Media";
 
         /// <summary>
+        /// The prefix for the media files name string.
+        /// </summary>
+        public const string BucketPrefix = "media";
+
+        /// <summary>
         /// The region for the bucket
         /// </summary>
-        [Required]
         public string Region { get; set; } = null!;
+
 
         /// <summary>
         /// The buckets name string.
@@ -26,20 +31,14 @@ namespace Umbraco.StorageProviders.AWSS3.IO
         public string BucketName { get; set; } = null!;
 
         /// <summary>
-        /// The prefix for the media files name string.
-        /// </summary>
-        [Required]
-        public string BucketPrefix { get; set; } = null!;
-
-
-        /// <summary>
         /// The virtual path.
         /// </summary>
         [Required]
         public string VirtualPath { get; set; } = null!;
 
-        public string BucketHostName { get; set; } = null!;
 
+
+        public string BucketHostName { get; set; } = null!;
 
         public S3CannedACL CannedACL { get; set; }
 
