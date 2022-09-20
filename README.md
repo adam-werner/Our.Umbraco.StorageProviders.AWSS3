@@ -1,21 +1,12 @@
-# Umbraco.StorageProviders
-
-This repository contains Umbraco storage providers that can replace the default physical file storage.
-
-## Umbraco.StorageProviders.AWSS3
+# Our.Umbraco.StorageProviders.AWSS3
 
 The AWS S3 Storage provider has an implementation of the Umbraco `IFileSystem` that connects to an AWS S3 Storage container.
 
 It also has the following features:
-- middleware for serving media files from the `/media` path
+- middleware for serving media files from the `/media` path with support for the image cache with files in the `/cache` path
 - ImageSharp image provider
 
 ### Usage
-
-Note to use on the current version (1.0.5) of ImageSharp.Web and Umbraco the following must be done:
-- Build Umbraco.Web.Common against the version of ImageSharp.Web on MyGet
-- ImageSharp.Web includes a breaking change, change CropWebProcessor.cs as shown here https://gist.github.com/andyfelton-equatedigital/9e5e02dd1ff53f3639e293ce911b7fba
-- Use your version of Umbraco.Web.Common on your project
 
 This provider can be added in the `Startup.cs` file:
 
@@ -26,7 +17,7 @@ public void ConfigureServices(IServiceCollection services)
         .AddBackOffice()
         .AddWebsite()
         .AddComposers()
-        // Add the AWS S3 Storage file system, ImageSharp image provider/cache and middleware for Media:
+        // Add the AWS S3 Storage file system
         .AddAWSS3MediaFileSystem()
         .Build();
 }
@@ -43,7 +34,7 @@ public void Configure(IApplicationBuilder app)
         {
             u.UseBackOffice();
             u.UseWebsite();
-            // Enables the AWS S3 Storage middleware for Media:
+            // Enables the AWS S3 Storage middleware for Media
             u.UseAWSS3MediaFileSystem();
 
         })
@@ -56,20 +47,7 @@ public void Configure(IApplicationBuilder app)
 }
 ```
 
-There're multiple ways to configure the provider, it can be done in code:
-
-```csharp
-services.AddUmbraco(_env, _config)
-
-    .AddAWSS3MediaFileSystem(options
-        options.BucketName = ""; => {
-        options.Region = "";
-        options.BucketPrefix = "";
-    })
-
-```
-
-In `appsettings.json`:
+In attempt to pare down the configuration and leverage AWS practices, the settings for this storage rquire only the S3 bucket name in `appsettings.json`:
 
 ```json
 {
@@ -77,9 +55,7 @@ In `appsettings.json`:
     "Storage": {
       "AWSS3": {
         "Media": {
-          "BucketName": "",
-          "Region": "",
-          "BucketPrefix": ""
+          "BucketName": ""
         }
       }
     }
@@ -87,26 +63,14 @@ In `appsettings.json`:
 }
 ```
 
-Or by environment variables:
-
-```sh
-UMBRACO__STORAGE__AWSS3__MEDIA__BUCKETNAME=<BUCKET_NAME>
-UMBRACO__STORAGE__AWSS3__MEDIA__REGION=<REGION>
-UMBRACO__STORAGE__AWSS3__MEDIA__BUCKETPREFIX=<BUCKETPREFIX>
-```
-
-_Note: you still have to add the provider in the `Startup.cs` file when not configuring the options in code._
-
 ## Folder structure in the AWS S3 Storage container
-The container name is expected to exist and uses the following folder structure:
-- `/media` - contains the Umbraco media, stored in the structure defined by the `IMediaPathScheme` registered in Umbraco (the default `UniqueMediaPathScheme` stores files with their original filename in 8 character directories, based on the content and property GUID identifier)
-
-Note that this is different than the behavior of other file system providers - i.e. https://github.com/andyfelton-equatedigital/Umbraco.StorageProviders.AWSS3 that expect the media contents to be at the root level.
+With an S3 bucket in place, the `media` folder will contain the traditional seen media folders and files while the `cache` folder will contain the files to support the image cache.
 
 ## Bugs, issues and Pull Requests
 
-If you encounter a bug when using this client library you are welcome to open an issue in the issue tracker of this repository. We always welcome Pull Request and please feel free to open an issue before submitting a Pull Request to discuss what you want to submit.
+If you encounter a bug when using this client library please open an issue in the issue tracker of this repository. 
 
-## License
+If you are interested in contributing, a Pull Request is always welcome.  Please feel free to open an issue before submitting a Pull Request to discuss what you would like to submit.
 
-Umbraco Storage Provider for AWS S3 is [MIT licensed](LICENSE).
+## Acknowlegements
+This project would not have been possible without the work done by those developers along the fork path.
