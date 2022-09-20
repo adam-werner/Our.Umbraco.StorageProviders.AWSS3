@@ -72,5 +72,9 @@ If you encounter a bug when using this client library please open an issue in th
 
 If you are interested in contributing, a Pull Request is always welcome.  Please feel free to open an issue before submitting a Pull Request to discuss what you would like to submit.
 
+## License
+
+Umbraco Storage Provider for AWS S3 is [MIT licensed](License.md).
+
 ## Acknowlegements
 This project would not have been possible without the work done by those developers along the fork path.
