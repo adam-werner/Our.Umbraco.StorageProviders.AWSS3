@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.StorageProviders.AWSS3", "Umbraco.StorageProviders.AWSS3\Umbraco.StorageProviders.AWSS3.csproj", "{4A1C3CCF-E545-4F07-B6BC-A433D3A727AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Our.Umbraco.StorageProviders.AWSS3", "Umbraco.StorageProviders.AWSS3\Our.Umbraco.StorageProviders.AWSS3.csproj", "{4A1C3CCF-E545-4F07-B6BC-A433D3A727AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

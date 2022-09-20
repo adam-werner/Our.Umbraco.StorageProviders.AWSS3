@@ -15,11 +15,11 @@ using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Infrastructure.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using Umbraco.Extensions;
-using Umbraco.StorageProviders.AWSS3.Imaging;
-using Umbraco.StorageProviders.AWSS3.IO;
-using Umbraco.StorageProviders.AWSS3.Services;
+using Our.Umbraco.StorageProviders.AWSS3.Imaging;
+using Our.Umbraco.StorageProviders.AWSS3.IO;
+using Our.Umbraco.StorageProviders.AWSS3.Services;
 
-namespace Umbraco.StorageProviders.AWSS3.DependencyInjection
+namespace Our.Umbraco.StorageProviders.AWSS3.DependencyInjection
 {
     public static class AWSS3MediaFileSystemExtensions
     {

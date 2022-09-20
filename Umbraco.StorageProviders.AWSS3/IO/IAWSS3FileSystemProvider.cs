@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Umbraco.StorageProviders.AWSS3.IO
+namespace Our.Umbraco.StorageProviders.AWSS3.IO
 {
     public interface IAWSS3FileSystemProvider
     {

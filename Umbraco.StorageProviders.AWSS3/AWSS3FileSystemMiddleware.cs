@@ -14,9 +14,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Umbraco.Cms.Core.Hosting;
-using Umbraco.StorageProviders.AWSS3.IO;
+using Our.Umbraco.StorageProviders.AWSS3.IO;
 
-namespace Umbraco.StorageProviders.AWSS3
+namespace Our.Umbraco.StorageProviders.AWSS3
 {
     public class AWSS3FileSystemMiddleware : IMiddleware
     {

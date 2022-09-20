@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
-namespace Umbraco.StorageProviders.AWSS3
+namespace Our.Umbraco.StorageProviders.AWSS3
 {
     public class AWSS3Composer : IComposer
     {

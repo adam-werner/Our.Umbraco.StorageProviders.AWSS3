@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.StaticFiles;
 
-namespace Umbraco.StorageProviders.AWSS3.Services
+namespace Our.Umbraco.StorageProviders.AWSS3.Services
 {
     class MimeTypeResolver : IMimeTypeResolver
     {
