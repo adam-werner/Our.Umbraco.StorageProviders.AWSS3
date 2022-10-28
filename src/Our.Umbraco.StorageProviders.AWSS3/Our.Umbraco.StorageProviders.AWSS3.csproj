@@ -1,25 +1,28 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Umbraco AWS S3 Storage Provider</Title>
-    <PackageProjectUrl>https://github.com/adam-werner/Our.Umbraco.StorageProviders.AWSS3</PackageProjectUrl>
+    <Version>1.0.1</Version>
     <Copyright>2022</Copyright>
     <Description>The AWS S3 Storage provider has an implementation of the Umbraco IFileSystem that connects to an AWS S3 Storage container.</Description>
-    <PackageTags>umbraco aws s3</PackageTags>
-    <PackageLicenseFile>License.md</PackageLicenseFile>
+    <PackageTags>umbraco aws s3 umbraco umbraco10</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/adam-werner/Our.Umbraco.StorageProviders.AWSS3</PackageProjectUrl>
     <RepositoryUrl>https://github.com/adam-werner/Our.Umbraco.StorageProviders.AWSS3</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
+    <RepositoryType>Git</RepositoryType>
+    <PackageIconUrl />
+    <PackageIcon>Logo.png</PackageIcon>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <None Include="..\License.md">
+    <None Include="..\..\brand\Logo.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.2" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.9.53" />
