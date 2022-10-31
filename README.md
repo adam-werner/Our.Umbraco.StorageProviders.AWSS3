@@ -47,7 +47,7 @@ public void Configure(IApplicationBuilder app)
 }
 ```
 
-In attempt to pare down the configuration and leverage AWS practices, the settings for this storage rquire only the S3 bucket name in `appsettings.json`:
+In attempt to pare down the configuration and leverage AWS practices with the AWSSDK.Extensions.NETCore.Setup dependency, the settings for this storage require only the S3 bucket name in `appsettings.json`:
 
 ```json
 {
@@ -62,6 +62,19 @@ In attempt to pare down the configuration and leverage AWS practices, the settin
   }
 }
 ```
+
+If Umbraco is not running in a container under an IAM policy, `appsettings.json` will likely need to include an `AWS` block:
+
+```json
+{
+  "AWS": {
+    "Profile": "local-test-profile",
+    "Region": "us-west-2"
+  }
+}
+```
+
+Further information for this settings block can be found in the [AWS documentation here](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-netcore.html#net-core-appsettings-values).
 
 ## Folder structure in the AWS S3 Storage container
 With an S3 bucket in place, the `media` folder will contain the traditional seen media folders and files while the `cache` folder will contain the files to support the image cache.
