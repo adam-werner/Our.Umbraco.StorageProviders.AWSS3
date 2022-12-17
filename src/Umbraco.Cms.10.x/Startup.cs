@@ -1,3 +1,5 @@
+using Our.Umbraco.StorageProviders.AWSS3.DependencyInjection;
+
 namespace Umbraco.Cms._10.x
 {
     public class Startup
@@ -33,6 +35,8 @@ namespace Umbraco.Cms._10.x
                 .AddBackOffice()
                 .AddWebsite()
                 .AddComposers()
+                // Add the AWS S3 Storage file system
+                .AddAWSS3MediaFileSystem()
                 .Build();
         }
 
@@ -53,6 +57,8 @@ namespace Umbraco.Cms._10.x
                 {
                     u.UseBackOffice();
                     u.UseWebsite();
+                    // Enables the AWS S3 Storage middleware for Media
+                    u.UseAWSS3MediaFileSystem();
                 })
                 .WithEndpoints(u =>
                 {
