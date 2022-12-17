@@ -14,3 +14,4 @@
 Build/temp
 build.out/
 build.tmp/
+/src/Umbraco.Cms.10.x/appsettings.Development.json
