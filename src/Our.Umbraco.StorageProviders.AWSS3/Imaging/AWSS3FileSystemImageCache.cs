@@ -10,6 +10,9 @@ using SixLabors.ImageSharp.Web.Caching;
 using SixLabors.ImageSharp.Web.Caching.AWS;
 using SixLabors.ImageSharp.Web.Resolvers;
 using Our.Umbraco.StorageProviders.AWSS3.IO;
+using Amazon.Util;
+using Amazon.Runtime;
+using Amazon.Runtime.CredentialManagement;
 
 namespace Our.Umbraco.StorageProviders.AWSS3.Imaging
 {
@@ -59,15 +62,9 @@ namespace Our.Umbraco.StorageProviders.AWSS3.Imaging
             // Bucket name comes from the AWSFileSystemOptions - BucketName is required in appsettings
             string bucketName = fileSystemOptions.BucketName;
 
-            // Get region -- start with fileSystemOptions; Doesn't exist? fallback to AWSOptions and then to S3Client
+            
             AWSOptions awsOptions = _configuration.GetAWSOptions();
-            string region = getRegionName(fileSystemOptions);
-
-            var cacheOptions = new AWSS3StorageCacheOptions
-            {
-                BucketName = bucketName,
-                Region = region
-            };
+            AWSS3StorageCacheOptions cacheOptions = getAWSS3StorageCacheOptions(fileSystemOptions, awsOptions);
 
             baseCache = new AWSS3StorageCache(Options.Create(cacheOptions));
 
@@ -94,11 +91,8 @@ namespace Our.Umbraco.StorageProviders.AWSS3.Imaging
         {
             if (name != _name) return;
 
-            var cacheOptions = new AWSS3StorageCacheOptions
-            {
-                BucketName = options.BucketName,
-                Region = getRegionName(options)
-            };
+            AWSOptions awsOptions = _configuration.GetAWSOptions();
+            var cacheOptions = getAWSS3StorageCacheOptions(options, awsOptions);
 
             baseCache = new AWSS3StorageCache(Options.Create(cacheOptions));
         }
@@ -122,6 +116,35 @@ namespace Our.Umbraco.StorageProviders.AWSS3.Imaging
             }
 
             return region;
+        }
+
+        /// <summary>
+        /// Return AWSS3StorageCacheOptions object with logic to check the ProfilesLocation and use that in an override
+        /// as the client may want to target an alternative location
+        /// </summary>
+        /// <param name="awss3FileSystemOptions"></param>
+        /// <param name="awsOptions"></param>
+        /// <returns></returns>
+        private AWSS3StorageCacheOptions getAWSS3StorageCacheOptions(AWSS3FileSystemOptions awss3FileSystemOptions, AWSOptions awsOptions)
+        {
+            AWSS3StorageCacheOptions cacheOptions = new AWSS3StorageCacheOptions
+            {
+                BucketName = awss3FileSystemOptions.BucketName,
+                Region = getRegionName(awss3FileSystemOptions)
+            };
+
+            // if ProfilesLocation added, physical assignment of the AWS credentials must be made
+            if (!string.IsNullOrEmpty(awsOptions.ProfilesLocation))
+            {
+                var chain = new CredentialProfileStoreChain(awsOptions.ProfilesLocation);
+                if (chain.TryGetAWSCredentials(awsOptions.Profile, out AWSCredentials awsCredentials))
+                {
+                    cacheOptions.AccessKey = awsCredentials.GetCredentials().AccessKey;
+                    cacheOptions.AccessSecret = awsCredentials.GetCredentials().SecretKey;
+                }
+            }
+
+            return cacheOptions;
         }
     }
 }
