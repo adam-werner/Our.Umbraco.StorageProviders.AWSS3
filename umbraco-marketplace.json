@@ -1,0 +1,42 @@
+{
+    "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json", 
+    "AuthorDetails": {
+      "Name": "Adam Werner",
+      "Description": "A full stack developer with a particular focus on .NET development.",
+      "Url": "https://castellantech.com/",
+      "ImageUrl": "https://www.castellantech.com/media/dqqlk3x3/adam-werner400x400.jpg"
+    },
+    "Category": "Developer Tools",
+    "Description": "An implementation of the Umbraco IFileSystem connecting your Umbraco Media section to an AWS S3 Storage bucket featuring middleware serving up media files from the `/media` path and ImageSharp image provider/cache.",
+    "DocumentationUrl": "https://github.com/adam-werner/Our.Umbraco.StorageProviders.AWSS3/blob/master/README.md",
+    "LicenseTypes": [ "Free" ],
+    "IssueTrackerUrl": "https://github.com/adam-werner/Our.Umbraco.StorageProviders.AWSS3/issues",
+    "PackageType": "Package",
+    "Screenshots": [
+      {
+        "ImageUrl": "https://castellantech.com/media/0fpf2ht3/our-umbraco-storageproviders-awss3-image.png",
+        "Caption": "Image in the backoffice and its corresponding file in the S3 bucket"
+      },
+      {
+        "ImageUrl": "https://castellantech.com/media/1kvbbtt1/our-umbraco-storageproviders-awss3-document.png",
+        "Caption": "Document in the backoffice and its correspnding file in the S3 bucket"
+      },
+      {
+        "ImageUrl": "https://castellantech.com/media/lh0ec3fo/our-umbraco-storageproviders-awss3-cache.png",
+        "Caption": "Cached images in use and its corresponding file in the S3 bucket"
+      },
+      {
+        "ImageUrl": "https://castellantech.com/media/mtehxh3p/our-umbraco-storageproviders-awss3-instructions.png",
+        "Caption": "At a glance - Minimum appsettings.json and startup.cs updates required"
+      }
+    ],
+    "Tags": [
+      "Media",
+      "AWS",
+      "S3",
+      "FileSystemProvider",
+      "Images",
+      "Storage"
+    ],
+    "Title": "AWS S3 Media File System Provider"
+  }
