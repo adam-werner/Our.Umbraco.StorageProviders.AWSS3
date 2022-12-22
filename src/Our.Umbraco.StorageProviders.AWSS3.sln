@@ -10,7 +10,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Brand", "Brand", "{0CD649CA
 		..\brand\Logo.png = ..\brand\Logo.png
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Cms.10.x", "Umbraco.Cms.10.x\Umbraco.Cms.10.x.csproj", "{CA0BBB53-B28D-4BC4-AB15-3383E8B52F4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Cms.10.x", "Umbraco.Cms.10.x\Umbraco.Cms.10.x.csproj", "{CA0BBB53-B28D-4BC4-AB15-3383E8B52F4A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9C57A7C5-FFA7-4C44-BAC6-B69B0FE04865}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Umbraco", "Umbraco", "{9C76D8BB-CA17-449E-A8C1-D61EE851007C}"
+	ProjectSection(SolutionItems) = preProject
+		..\umbraco-marketplace.json = ..\umbraco-marketplace.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +36,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0CD649CA-8017-45BF-B568-FFB350CB7703} = {9C57A7C5-FFA7-4C44-BAC6-B69B0FE04865}
+		{9C76D8BB-CA17-449E-A8C1-D61EE851007C} = {9C57A7C5-FFA7-4C44-BAC6-B69B0FE04865}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9C20A78C-C895-41E9-9641-7B987FA1463D}
