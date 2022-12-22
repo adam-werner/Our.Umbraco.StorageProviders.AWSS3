@@ -4,10 +4,10 @@
     <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Umbraco AWS S3 Storage Provider</Title>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Copyright>2022</Copyright>
-    <Description>The AWS S3 Storage provider has an implementation of the Umbraco IFileSystem that connects to an AWS S3 Storage container.</Description>
-    <PackageTags>umbraco aws s3 umbraco umbraco10</PackageTags>
+    <Description>An implementation of the Umbraco IFileSystem connecting your Umbraco Media section to an AWS S3 Storage bucket featuring middleware serving up media files from the `/media` path and ImageSharp image provider/cache.</Description>
+    <PackageTags>umbraco;aws;s3;umbraco;umbraco10;umbraco-marketplace</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/adam-werner/Our.Umbraco.StorageProviders.AWSS3</PackageProjectUrl>
     <RepositoryUrl>https://github.com/adam-werner/Our.Umbraco.StorageProviders.AWSS3</RepositoryUrl>
