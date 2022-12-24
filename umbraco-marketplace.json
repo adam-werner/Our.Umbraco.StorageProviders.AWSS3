@@ -2,7 +2,7 @@
     "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json", 
     "AuthorDetails": {
       "Name": "Adam Werner",
-      "Description": "A full stack developer with a particular focus on .NET development.",
+      "Description": "A full stack developer with a particular focus on .NET development.  An Umbraco Certified Master.",
       "Url": "https://castellantech.com/",
       "ImageUrl": "https://www.castellantech.com/media/dqqlk3x3/adam-werner400x400.jpg"
     },
