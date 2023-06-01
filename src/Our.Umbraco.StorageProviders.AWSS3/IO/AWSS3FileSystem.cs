@@ -256,29 +256,23 @@ namespace Our.Umbraco.StorageProviders.AWSS3.IO
             var request = new GetObjectMetadataRequest
             {
                 BucketName = _bucketName,
-                Key = ResolveBucketPath(path),
+                Key = ResolveBucketPath(path)
             };
 
             try
             {
-                var response = Execute(client => client.GetObjectMetadataAsync(request)).Result;
+                var response = Execute(client => client.GetObjectMetadataAsync(request)).GetAwaiter().GetResult();
                 return true;
             }
             catch (FileNotFoundException)
             {
                 return false;
             }
-            catch (AggregateException ex)
+            catch (AmazonS3Exception ex)
             {
-                foreach (var innerEx in ex.InnerExceptions)
+                if (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    if (innerEx is AmazonS3Exception amazonS3Exception)
-                    {
-                        if (amazonS3Exception.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        {
-                            return false;
-                        }
-                    }
+                    return false;
                 }
 
                 throw;
