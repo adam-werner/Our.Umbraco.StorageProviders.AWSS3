@@ -19,6 +19,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Umbraco", "Umbraco", "{9C76
 		..\umbraco-marketplace.json = ..\umbraco-marketplace.json
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github", "Github", "{4249D94E-1D5D-4A99-A410-708667CACD05}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{CC273002-4DEF-4022-B7FA-B1E6575A913A}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\build-release-to-nuget.yaml = ..\.github\workflows\build-release-to-nuget.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +47,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0CD649CA-8017-45BF-B568-FFB350CB7703} = {9C57A7C5-FFA7-4C44-BAC6-B69B0FE04865}
 		{9C76D8BB-CA17-449E-A8C1-D61EE851007C} = {9C57A7C5-FFA7-4C44-BAC6-B69B0FE04865}
+		{4249D94E-1D5D-4A99-A410-708667CACD05} = {9C57A7C5-FFA7-4C44-BAC6-B69B0FE04865}
+		{CC273002-4DEF-4022-B7FA-B1E6575A913A} = {4249D94E-1D5D-4A99-A410-708667CACD05}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9C20A78C-C895-41E9-9641-7B987FA1463D}
