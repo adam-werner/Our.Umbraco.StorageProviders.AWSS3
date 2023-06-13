@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Umbraco AWS S3 Storage Provider</Title>
     <Version>1.1.1</Version>
@@ -15,19 +15,19 @@
     <PackageIconUrl />
     <PackageIcon>Logo.png</PackageIcon>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <None Include="..\..\brand\Logo.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.2" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.9.53" />
     <PackageReference Include="SixLabors.ImageSharp.Web.Providers.AWS" Version="2.0.2" />
-    <PackageReference Include="Umbraco.Cms.Web.Common" Version="11.1.0" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="10.0.0" />
   </ItemGroup>
 
 </Project>
