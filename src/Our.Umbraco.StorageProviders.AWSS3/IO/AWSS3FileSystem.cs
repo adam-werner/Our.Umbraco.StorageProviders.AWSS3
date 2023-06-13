@@ -11,6 +11,7 @@ using Umbraco.Cms.Core.Hosting;
 using Umbraco.Cms.Core.IO;
 using Our.Umbraco.StorageProviders.AWSS3.Services;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace Our.Umbraco.StorageProviders.AWSS3.IO
 {
@@ -400,7 +401,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3.IO
             if (path.StartsWith(Delimiter))
                 path = path.Substring(1);
 
-            return string.Concat(_bucketPrefix, "/", path);
+            return string.Concat(_bucketPrefix, "/", WebUtility.UrlDecode(path));
         }
 
         protected virtual string RemovePrefix(string key)
