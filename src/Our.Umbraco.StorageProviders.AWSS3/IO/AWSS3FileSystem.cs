@@ -1,17 +1,13 @@
+using Amazon.S3;
+using Amazon.S3.Model;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.Logging;
+using Our.Umbraco.StorageProviders.AWSS3.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Microsoft.AspNetCore.StaticFiles;
 using Umbraco.Cms.Core.Hosting;
-using Umbraco.Cms.Core.IO;
-using Our.Umbraco.StorageProviders.AWSS3.Services;
-using Microsoft.Extensions.Logging;
-using System.Net;
 
 namespace Our.Umbraco.StorageProviders.AWSS3.IO
 {
@@ -31,7 +27,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3.IO
         protected const string Delimiter = "/";
         protected const int BatchSize = 1000;
 
-        public bool CanAddPhysical => throw new NotImplementedException();
+        public bool CanAddPhysical => false;
 
         /// <summary>
         ///     Creates a new instance of <see cref="AWSS3FileSystem" />.
@@ -150,22 +146,45 @@ namespace Our.Umbraco.StorageProviders.AWSS3.IO
 
         public void AddFile(string path, Stream stream, bool overrideIfExists)
         {
+            if (!overrideIfExists && FileExists(path))
+            {
+                throw new InvalidOperationException($"A file at path '{path}' already exists");
+            }
+
             using (var memoryStream = new MemoryStream())
             {
                 stream.CopyTo(memoryStream);
-                var request = new PutObjectRequest
-                {
-                    BucketName = _bucketName,
-                    Key = ResolveBucketPath(path),
-                    CannedACL = _cannedACL,
-                    ContentType = _mimeTypeResolver.Resolve(path),
-                    InputStream = memoryStream,
-                    ServerSideEncryptionMethod = _serverSideEncryptionMethod
-                };
-
-                var response = Execute(client => client.PutObjectAsync(request)).Result;
-                _logger.LogInformation(string.Format("Object {0} Created, Id:{1}, Hash:{2}", path, response.VersionId, response.ETag));
+                AddFileFromStream(path, memoryStream);
             }
+        }
+
+        public void AddFile(string path, string physicalPath, bool overrideIfExists = true, bool copy = false)
+        {
+            if (!overrideIfExists && FileExists(path))
+            {
+                throw new InvalidOperationException($"A file at path '{path}' already exists");
+            }
+
+            using (var fileStream = new FileStream(physicalPath, FileMode.Open))
+            {
+                AddFileFromStream(path, fileStream);
+            }
+        }
+
+        private void AddFileFromStream(string path, Stream inputStream)
+        {
+            var request = new PutObjectRequest
+            {
+                BucketName = _bucketName,
+                Key = ResolveBucketPath(path),
+                CannedACL = _cannedACL,
+                ContentType = _mimeTypeResolver.Resolve(path),
+                InputStream = inputStream,
+                ServerSideEncryptionMethod = _serverSideEncryptionMethod
+            };
+
+            var response = Execute(client => client.PutObjectAsync(request)).Result;
+            _logger.LogInformation(string.Format("Object {0} Created, Id:{1}, Hash:{2}", path, response.VersionId, response.ETag));
         }
 
         public IEnumerable<string> GetFiles(string path)
@@ -242,12 +261,21 @@ namespace Our.Umbraco.StorageProviders.AWSS3.IO
 
             try
             {
-                Execute(client => client.GetObjectMetadataAsync(request));
+                var response = Execute(client => client.GetObjectMetadataAsync(request)).GetAwaiter().GetResult();
                 return true;
             }
             catch (FileNotFoundException)
             {
                 return false;
+            }
+            catch (AmazonS3Exception ex)
+            {
+                if (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return false;
+                }
+
+                throw;
             }
         }
 
@@ -336,11 +364,6 @@ namespace Our.Umbraco.StorageProviders.AWSS3.IO
             return response.ContentLength;
         }
 
-        public void AddFile(string path, string physicalPath, bool overrideIfExists = true, bool copy = false)
-        {
-            throw new NotImplementedException();
-        }
-        
         protected virtual T Execute<T>(Func<IAmazonS3, T> request)
         {
             try
