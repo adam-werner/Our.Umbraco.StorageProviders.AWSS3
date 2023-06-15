@@ -424,7 +424,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3.IO
             if (path.StartsWith(Delimiter))
                 path = path.Substring(1);
 
-            return string.Concat(_bucketPrefix, "/", path);
+            return string.Concat(_bucketPrefix, "/", WebUtility.UrlDecode(path));
         }
 
         protected virtual string RemovePrefix(string key)
