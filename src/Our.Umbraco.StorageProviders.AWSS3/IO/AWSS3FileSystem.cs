@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Umbraco.Cms.Core.Hosting;
 
 namespace Our.Umbraco.StorageProviders.AWSS3.IO
