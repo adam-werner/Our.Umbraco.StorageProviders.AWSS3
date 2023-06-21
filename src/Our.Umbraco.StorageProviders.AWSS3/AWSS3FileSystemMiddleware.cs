@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.S3;
@@ -94,7 +95,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3
             string containerPath = $"{_containerRootPath.TrimEnd('/')}/{(request.Path.Value.Remove(0, _rootPath.Length)).TrimStart('/')}";
 
             var s3RequestConditions = GetAccessCondition(context.Request, containerPath, _bucketName);
-            
+
             GetObjectMetadataResponse objectProperties = null;
             var ignoreRange = false;
 
@@ -187,13 +188,15 @@ namespace Our.Umbraco.StorageProviders.AWSS3
                 {
                     var range = rangeHeader.Ranges.First();
                     var contentRange = GetRangeHeader(objectProperties, range);
-
-                    response.StatusCode = (int)HttpStatusCode.PartialContent;
-                    response.ContentType = objectProperties.Headers.ContentType;
+                    response.ContentType = "application/octet-stream";
+                    response.StatusCode = StatusCodes.Status206PartialContent;
+                    responseHeaders.Append(HeaderNames.AcceptRanges, "bytes");
                     responseHeaders.ContentRange = contentRange;
 
-                    await DownloadRangeToStreamAsync(_s3Client, objectProperties, response.Body, contentRange, context.RequestAborted,
-                        _bucketName, containerPath).ConfigureAwait(false);
+                    await DownloadRangeToStreamAsync(_s3Client, objectProperties, response.Body, contentRange,
+                        context.RequestAborted,
+                        _bucketName, containerPath);
+
                     return;
                 }
 
@@ -346,37 +349,30 @@ namespace Our.Umbraco.StorageProviders.AWSS3
         private static async Task DownloadRangeToStreamAsync(IAmazonS3 s3Client, GetObjectMetadataResponse properties,
             Stream outputStream, ContentRangeHeaderValue contentRange, CancellationToken cancellationToken, string bucketName, string key)
         {
-            var offset = contentRange.From.GetValueOrDefault(0L);
-            var length = properties.ContentLength;
+            var fileSize = properties.ContentLength;
+            var startGroup = contentRange.From.GetValueOrDefault(0L);
+            var endGroup = contentRange.To.GetValueOrDefault(0L);
+            var start = startGroup > 0 ? Convert.ToInt64(startGroup) : 0;
+            var end = endGroup > 0 ? Convert.ToInt64(endGroup) : fileSize - 1;
 
-            if (contentRange.To.HasValue && contentRange.From.HasValue)
+            if (start > fileSize || end >= fileSize)
             {
-                length = contentRange.To.Value - contentRange.From.Value + 1;
-            }
-            else if (contentRange.To.HasValue)
-            {
-                length = contentRange.To.Value + 1;
-            }
-            else if (contentRange.From.HasValue)
-            {
-                length = properties.ContentLength - contentRange.From.Value + 1;
+                return;
             }
 
-            await DownloadRangeToStreamAsync(s3Client, outputStream, offset, length, cancellationToken, bucketName, key).ConfigureAwait(false);
+            await DownloadRangeToStreamAsync(s3Client, outputStream, start, end, cancellationToken, bucketName, key).ConfigureAwait(false);
         }
 
         private static async Task DownloadRangeToStreamAsync(IAmazonS3 s3Client, Stream outputStream,
-            long offset, long length, CancellationToken cancellationToken, string bucketName, string key)
+            long start, long end, CancellationToken cancellationToken, string bucketName, string key)
         {
             try
             {
-                if (length == 0) return;
-
                 GetObjectRequest request = new GetObjectRequest
                 {
                     BucketName = bucketName,
                     Key = key,
-                    ByteRange =  new ByteRange(offset, length)
+                    ByteRange = new ByteRange(start, end)
                 };
 
                 var response = await s3Client.GetObjectAsync(request, cancellationToken).ConfigureAwait(false);
