@@ -69,10 +69,13 @@ If Umbraco is not running in a container under an IAM policy, `appsettings.json`
 {
   "AWS": {
     "Profile": "local-test-profile",
-    "Region": "us-west-2"
+    "Region": "us-west-2",
+    "ProfilesLocation": "<path to aws credential>"
   }
 }
 ```
+
+If ```ProfilesLocation``` option is null or empty, AWS SDK will search the shared AWS credentials file in the default location.
 
 Further information for this settings block can be found in the [AWS documentation here](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-config-netcore.html#net-core-appsettings-values).
 

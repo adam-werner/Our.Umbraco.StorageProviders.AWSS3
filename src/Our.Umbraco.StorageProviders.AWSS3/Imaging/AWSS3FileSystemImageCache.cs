@@ -133,14 +133,26 @@ namespace Our.Umbraco.StorageProviders.AWSS3.Imaging
                 Region = getRegionName(awss3FileSystemOptions)
             };
 
+            AWSCredentials awsCredentials;
             // if ProfilesLocation added, physical assignment of the AWS credentials must be made
             if (!string.IsNullOrEmpty(awsOptions.ProfilesLocation))
             {
                 var chain = new CredentialProfileStoreChain(awsOptions.ProfilesLocation);
-                if (chain.TryGetAWSCredentials(awsOptions.Profile, out AWSCredentials awsCredentials))
+                if (chain.TryGetAWSCredentials(awsOptions.Profile, out awsCredentials))
                 {
                     cacheOptions.AccessKey = awsCredentials.GetCredentials().AccessKey;
                     cacheOptions.AccessSecret = awsCredentials.GetCredentials().SecretKey;
+                }
+            }
+            else
+            {
+                // ProfilesLocation not defined, retrieve AWS credentails from default location
+                var chain = new CredentialProfileStoreChain();
+                if (chain.TryGetAWSCredentials(awsOptions.Profile, out awsCredentials))
+                {
+                    cacheOptions.AccessKey = awsCredentials.GetCredentials().AccessKey;
+                    cacheOptions.AccessSecret = awsCredentials.GetCredentials().SecretKey;
+
                 }
             }
 
