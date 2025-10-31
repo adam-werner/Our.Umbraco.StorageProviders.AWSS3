@@ -238,7 +238,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3.IO
 
             if (stream.CanSeek)
                 stream.Seek(0, SeekOrigin.Begin);
-            
+
             return stream;
         }
 
@@ -343,7 +343,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3.IO
             };
 
             var response = Execute(client => client.GetObjectMetadataAsync(request)).Result;
-            return new DateTimeOffset(response.LastModified);
+            return new DateTimeOffset(response.LastModified ?? new DateTime());
         }
 
         public DateTimeOffset GetCreated(string path)
@@ -389,7 +389,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3.IO
             var response = Execute(client => client.ListObjectsAsync(request)).Result;
             yield return response;
 
-            while (response.IsTruncated)
+            while (response.IsTruncated ?? false)
             {
                 request.Marker = response.NextMarker;
                 response = Execute(client => client.ListObjectsAsync(request)).Result;
@@ -401,7 +401,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3.IO
         {
             if (string.IsNullOrEmpty(path))
                 return _bucketPrefix;
-            
+
             // Equalise delimiters
             path = path.Replace("/", Delimiter).Replace("\\", Delimiter);
 

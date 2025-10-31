@@ -10,7 +10,6 @@ using SixLabors.ImageSharp.Web.Caching;
 using SixLabors.ImageSharp.Web.Caching.AWS;
 using SixLabors.ImageSharp.Web.Resolvers;
 using Our.Umbraco.StorageProviders.AWSS3.IO;
-using Amazon.Util;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 
@@ -62,11 +61,11 @@ namespace Our.Umbraco.StorageProviders.AWSS3.Imaging
             // Bucket name comes from the AWSFileSystemOptions - BucketName is required in appsettings
             string bucketName = fileSystemOptions.BucketName;
 
-            
+
             AWSOptions awsOptions = _configuration.GetAWSOptions();
             AWSS3StorageCacheOptions cacheOptions = getAWSS3StorageCacheOptions(fileSystemOptions, awsOptions);
 
-            baseCache = new AWSS3StorageCache(Options.Create(cacheOptions));
+            baseCache = new AWSS3StorageCache(Options.Create(cacheOptions), null);
 
             options.OnChange(OptionsOnChange);
         }
@@ -94,7 +93,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3.Imaging
             AWSOptions awsOptions = _configuration.GetAWSOptions();
             var cacheOptions = getAWSS3StorageCacheOptions(options, awsOptions);
 
-            baseCache = new AWSS3StorageCache(Options.Create(cacheOptions));
+            baseCache = new AWSS3StorageCache(Options.Create(cacheOptions), null);
         }
 
 
