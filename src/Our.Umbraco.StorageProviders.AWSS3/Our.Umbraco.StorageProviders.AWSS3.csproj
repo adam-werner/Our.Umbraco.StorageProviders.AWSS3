@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <TargetFramework>net9.0</TargetFramework>
     <Title>Umbraco AWS S3 Storage Provider</Title>
-    <Version>1.1.1</Version>
-    <Copyright>2022</Copyright>
+    <Version>2.0.0</Version>
+    <Copyright>2025</Copyright>
     <Description>An implementation of the Umbraco IFileSystem connecting your Umbraco Media section to an AWS S3 Storage bucket featuring middleware serving up media files from the `/media` path and ImageSharp image provider/cache.</Description>
-    <PackageTags>umbraco;aws;s3;umbraco;umbraco10;umbraco-marketplace</PackageTags>
+    <PackageTags>umbraco;aws;s3;umbraco;umbraco15;umbraco-marketplace</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/adam-werner/Our.Umbraco.StorageProviders.AWSS3</PackageProjectUrl>
     <RepositoryUrl>https://github.com/adam-werner/Our.Umbraco.StorageProviders.AWSS3</RepositoryUrl>
@@ -24,10 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.2" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.9.53" />
-    <PackageReference Include="SixLabors.ImageSharp.Web.Providers.AWS" Version="2.0.2" />
-    <PackageReference Include="Umbraco.Cms.Web.Common" Version="10.0.0" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.9" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.9.1" />
+    <PackageReference Include="SixLabors.ImageSharp.Web.Providers.AWS" Version="3.2.0" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="15.0.0" />
   </ItemGroup>
 
 </Project>

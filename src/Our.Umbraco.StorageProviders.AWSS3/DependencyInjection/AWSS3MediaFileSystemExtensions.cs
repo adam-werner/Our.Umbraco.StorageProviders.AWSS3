@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp.Web.Caching;
-using SixLabors.ImageSharp.Web.Caching.AWS;
 using SixLabors.ImageSharp.Web.Providers;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -17,7 +12,6 @@ using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using Umbraco.Extensions;
 using Our.Umbraco.StorageProviders.AWSS3.Imaging;
 using Our.Umbraco.StorageProviders.AWSS3.IO;
-using Our.Umbraco.StorageProviders.AWSS3.Services;
 
 namespace Our.Umbraco.StorageProviders.AWSS3.DependencyInjection
 {

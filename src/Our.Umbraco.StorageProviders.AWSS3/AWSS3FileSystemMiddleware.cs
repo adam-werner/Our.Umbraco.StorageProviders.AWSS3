@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.S3;
@@ -35,7 +32,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3
         /// <param name="options">The options.</param>
         /// <param name="fileSystemProvider">The file system provider.</param>
         /// <param name="hostingEnvironment">The hosting environment.</param>
-        /// 
+        ///
         public AWSS3FileSystemMiddleware(IOptionsMonitor<AWSS3FileSystemOptions> options, IAWSS3FileSystemProvider fileSystemProvider, IHostingEnvironment hostingEnvironment, IAmazonS3 s3Client)
             : this(AWSS3FileSystemOptions.MediaFileSystemName, options, fileSystemProvider, hostingEnvironment, s3Client)
         { }
@@ -131,7 +128,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3
             catch (Exception ex) when (ex.Message == "The condition specified using HTTP conditional header(s) is not met.")
             {
                 if (s3RequestConditions != null
-                    && (s3RequestConditions.EtagToMatch != "" || s3RequestConditions.UnmodifiedSinceDateUtc != DateTime.MinValue))
+                    && (s3RequestConditions.EtagToMatch != "" || s3RequestConditions.UnmodifiedSinceDate != DateTime.MinValue))
                 {
                     // If-Range or If-Unmodified-Since is not met
                     // if the resource has been modified, we need to send the whole file back with a 200 OK
@@ -260,7 +257,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3
                 var ifModifiedSince = request.Headers["If-Modified-Since"];
                 if (!string.IsNullOrEmpty(ifModifiedSince))
                 {
-                    getObjectMetadataRequest.ModifiedSinceDateUtc =
+                    getObjectMetadataRequest.ModifiedSinceDate =
                         DateTime.Parse(ifModifiedSince, CultureInfo.InvariantCulture);
                     return getObjectMetadataRequest;
                 }
@@ -276,7 +273,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3
 
                     if (DateTime.TryParse(ifRange, out var date))
                     {
-                        conditions.UnmodifiedSinceDateUtc = date;
+                        conditions.UnmodifiedSinceDate = date;
                     }
                     else
                     {
@@ -288,7 +285,7 @@ namespace Our.Umbraco.StorageProviders.AWSS3
                 if (!string.IsNullOrEmpty(ifUnmodifiedSince))
                 {
 
-                    getObjectMetadataRequest.UnmodifiedSinceDateUtc =
+                    getObjectMetadataRequest.UnmodifiedSinceDate =
                         DateTime.Parse(ifUnmodifiedSince, CultureInfo.InvariantCulture);
                     return getObjectMetadataRequest;
                 }
